@@ -26,7 +26,6 @@ class HTTPMetod(Enum):
 
 
 class ZohoRequestor:
-    auth_url: str = "https://accounts.zoho.eu/oauth/v2/token"
     _token: ZohoOAuth2Token
     _instance: Self
 
