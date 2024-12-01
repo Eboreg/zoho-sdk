@@ -1,19 +1,14 @@
 import datetime
 from dataclasses import dataclass, field
 from decimal import Decimal
-from typing import TYPE_CHECKING
 
-from zoho.records.modules.base import AbstractModuleRecord
+from zoho.records.modules.base import AbstractTaggedModuleRecord
 from zoho.records.ref import RecordRef, TerritoryRef, UserRef
 from zoho.types import LanguageFieldType
 
 
-if TYPE_CHECKING:
-    from zoho.records.tag import Tag
-
-
 @dataclass
-class BaseContact(AbstractModuleRecord):
+class BaseContact(AbstractTaggedModuleRecord):
     Last_Name: str
 
     Account_Name: RecordRef | None = None
@@ -60,7 +55,6 @@ class BaseContact(AbstractModuleRecord):
     Salutation: str | None = None
     Secondary_Email: str | None = None
     Skype_ID: str | None = None
-    Tag: list["Tag"] = field(default_factory=list)
     Territories: list[TerritoryRef] = field(default_factory=list)
     Title: str | None = None
     Twitter: str | None = None

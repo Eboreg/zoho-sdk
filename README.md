@@ -9,3 +9,5 @@ Set `zoho.settings.client_id`, `zoho.settings.client_secret`, and `zoho.settings
 You may also want to set `zoho.settings.timezone` (env. var `ZOHO_TIMEZONE`) to a valid timezone name, such as `Antarctica/Troll`, `Asia/Oral`, or `America/Pangnirtung`.
 
 Installing this package also installs a `zoho-get-token` executable. Use this to get a refresh token.
+
+Access your data via class methods on the module classes, such as `zoho.Lead.list()`, `zoho.Contact.get("contact_id")`, etc.

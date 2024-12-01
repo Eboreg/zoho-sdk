@@ -1,10 +1,11 @@
 from abc import ABC
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Self
 
 from klaatu_python.utils import partition, zip_dict_lists
 
 from zoho.records.base import AbstractIDRecord
+from zoho.records.tag import Tag as ZohoTag
 from zoho.requestor import ZohoRequestor
 from zoho.search import Search
 from zoho.settings import settings
@@ -108,3 +109,24 @@ class AbstractModuleRecord(AbstractIDRecord, ABC):
 
     def update(self):
         ZohoRequestor.singleton().put(url=self._get_api_url(), json={"data": [self.to_dict()]})
+
+
+@dataclass
+class AbstractTaggedModuleRecord(AbstractModuleRecord, ABC):
+    Tag: list[ZohoTag] = field(default_factory=list)
+
+    @classmethod
+    def bulk_tag(cls, objs: list[Self], tags: list[ZohoTag]) -> list[Self]:
+        untagged_objs = [obj for obj in objs if set(tags) - set(obj.Tag)]
+        tagged_objs = list(set(objs) - set(untagged_objs))
+        data = [
+            {
+                "id": obj.id,
+                "Tag": [tag.to_dict() for tag in set(obj.Tag).union(tags)],
+            }
+            for obj in untagged_objs
+        ]
+        for partial in partition(data, 100):
+            ZohoRequestor.singleton().put(url=cls._get_api_url(), json={"data": partial})
+        tagged_objs.extend(obj.copy(Tag=list(set(obj.Tag).union(tags))) for obj in untagged_objs)
+        return tagged_objs

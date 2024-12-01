@@ -1,18 +1,13 @@
 import datetime
 from dataclasses import dataclass, field
 from decimal import Decimal
-from typing import TYPE_CHECKING
 
-from zoho.records.modules.base import AbstractModuleRecord
+from zoho.records.modules.base import AbstractTaggedModuleRecord
 from zoho.records.ref import RecordRef, UserRef
 
 
-if TYPE_CHECKING:
-    from zoho.records.tag import Tag
-
-
 @dataclass
-class BaseCampaign(AbstractModuleRecord):
+class BaseCampaign(AbstractTaggedModuleRecord):
     Campaign_Name: str
 
     Actual_Cost: Decimal | None = None
@@ -31,7 +26,6 @@ class BaseCampaign(AbstractModuleRecord):
     Parent_Campaign: RecordRef | None = None
     Start_Date: datetime.date | None = None
     Status: str | None = None
-    Tag: list["Tag"] = field(default_factory=list)
     Type: str | None = None
 
     module: str = field(init=False, default="Campaigns")

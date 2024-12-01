@@ -3,17 +3,13 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Self
 
-from klaatu_python.utils import partition
-
-from zoho.records.modules.base import AbstractModuleRecord
+from zoho.records.modules.base import AbstractTaggedModuleRecord
 from zoho.records.ref import RecordRef, UserRef
-from zoho.records.tag import Tag as ZohoTag
-from zoho.requestor import ZohoRequestor
 from zoho.types import LanguageFieldType, SchoolYearType
 
 
 @dataclass
-class BaseLead(AbstractModuleRecord):
+class BaseLead(AbstractTaggedModuleRecord):
     Last_Name: str
 
     Annual_Revenue: Decimal | None = None
@@ -58,7 +54,6 @@ class BaseLead(AbstractModuleRecord):
     Skype_ID: str | None = None
     State: str | None = None
     Street: str | None = None
-    Tag: list[ZohoTag] = field(default_factory=list)
     Twitter: str | None = None
     Unsubscribed_Mode: str | None = None
     Unsubscribed_Time: datetime.datetime | None = None
@@ -67,22 +62,6 @@ class BaseLead(AbstractModuleRecord):
     Zip_Code: str | None = None
 
     module: str = field(init=False, default="Leads")
-
-    @classmethod
-    def bulk_tag(cls, leads: list[Self], tags: list[ZohoTag]) -> list[Self]:
-        untagged_leads = [lead for lead in leads if set(tags) - set(lead.Tag)]
-        tagged_leads = list(set(leads) - set(untagged_leads))
-        data = [
-            {
-                "id": lead.id,
-                "Tag": [tag.to_dict() for tag in set(lead.Tag).union(tags)],
-            }
-            for lead in untagged_leads
-        ]
-        for partial in partition(data, 100):
-            ZohoRequestor.singleton().put(url=cls._get_api_url(), json={"data": partial})
-        tagged_leads.extend(lead.copy(Tag=list(set(lead.Tag).union(tags))) for lead in untagged_leads)
-        return tagged_leads
 
 
 @dataclass

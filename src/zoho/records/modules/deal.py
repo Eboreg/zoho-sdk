@@ -2,13 +2,12 @@ import datetime
 from dataclasses import dataclass, field
 from decimal import Decimal
 
-from zoho.records.modules.base import AbstractModuleRecord
+from zoho.records.modules.base import AbstractTaggedModuleRecord
 from zoho.records.ref import RecordRef, TerritoryRef, UserRef
-from zoho.records.tag import Tag
 
 
 @dataclass
-class BaseDeal(AbstractModuleRecord):
+class BaseDeal(AbstractTaggedModuleRecord):
     Deal_Name: str
     Pipeline: str
     Stage: str
@@ -33,7 +32,6 @@ class BaseDeal(AbstractModuleRecord):
     Probability: int | None = None
     Record_Image: str | None = None
     Sales_Cycle_Duration: int | None = None
-    Tag: list["Tag"] = field(default_factory=list)
     Territory: list[TerritoryRef] = field(default_factory=list)
     Type: str | None = None
 

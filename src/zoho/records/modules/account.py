@@ -2,13 +2,12 @@ import datetime
 from dataclasses import dataclass, field
 from decimal import Decimal
 
-from zoho.records.modules.base import AbstractModuleRecord
+from zoho.records.modules.base import AbstractTaggedModuleRecord
 from zoho.records.ref import RecordRef, TerritoryRef, UserRef
-from zoho.records.tag import Tag
 
 
 @dataclass
-class BaseAccount(AbstractModuleRecord):
+class BaseAccount(AbstractTaggedModuleRecord):
     Account_Name: str
 
     Account_Number: str | None = None
@@ -41,7 +40,6 @@ class BaseAccount(AbstractModuleRecord):
     Shipping_State: str | None = None
     Shipping_Street: str | None = None
     SIC_Code: int | None = None
-    Tag: list["Tag"] = field(default_factory=list)
     Territories: list[TerritoryRef] = field(default_factory=list)
     Ticker_Symbol: str | None = None
     Website: str | None = None
